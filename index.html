@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASM Password Generator</title>
+</head>
+<body>
+<h1>Password Generator</h1>
+<form id="password-form">
+    <label>
+        Include Lowercase:
+        <input type="checkbox" id="include-lowercase" checked>
+    </label>
+    <br>
+    <label>
+        Include Uppercase:
+        <input type="checkbox" id="include-uppercase" checked>
+    </label>
+    <br>
+    <label>
+        Include Numbers:
+        <input type="checkbox" id="include-numbers" checked>
+    </label>
+    <br>
+    <label>
+        Include Symbols:
+        <input type="checkbox" id="include-symbols" checked>
+    </label>
+    <br>
+    <label>
+        Max Length:
+        <input type="number" id="max-length" value="12" min="1">
+    </label>
+    <br>
+    <button type="button" id="generate-button">Generate Password</button>
+</form>
+<h2>Generated Password:</h2>
+<p id="generated-password"></p>
+
+<script type="module">
+    import init, { PasswordConfig, generate_random_password } from './pkg/pass_gen_wasm.js';
+
+    async function run() {
+        await init();
+
+        const generateButton = document.getElementById('generate-button');
+        const generatedPasswordElement = document.getElementById('generated-password');
+
+        generateButton.addEventListener('click', () => {
+            const includeLowercase = document.getElementById('include-lowercase').checked;
+            const includeUppercase = document.getElementById('include-uppercase').checked;
+            const includeNumbers = document.getElementById('include-numbers').checked;
+            const includeSymbols = document.getElementById('include-symbols').checked;
+            const maxLength = parseInt(document.getElementById('max-length').value, 10);
+
+            const config = new PasswordConfig(includeLowercase, includeUppercase, includeNumbers, includeSymbols, maxLength);
+            generatedPasswordElement.textContent = generate_random_password(config);
+        });
+    }
+
+    run();
+</script>
+</body>
+</html>
